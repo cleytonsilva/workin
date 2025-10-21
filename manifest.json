@@ -29,6 +29,8 @@
       "js": [
         "shared/types.js",
         "shared/utils.js",
+        "utils/safety-manager.js",
+        "content/linkedin-job-scraper.js",
         "content/linkedin-detector.js"
       ],
       "css": ["content/workin-overlay.css"],

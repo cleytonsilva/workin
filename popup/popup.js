@@ -52,6 +52,8 @@ class WorkInPopup {
     document.getElementById('settingsBtn').addEventListener('click', () => this.openSettings());
     document.getElementById('startOnboardingBtn').addEventListener('click', () => this.startOnboarding());
     document.getElementById('scanPageBtn').addEventListener('click', () => this.scanCurrentPage());
+    document.getElementById('collectJobsBtn').addEventListener('click', () => this.collectJobs());
+    document.getElementById('toggleAutoApply').addEventListener('change', (e) => this.toggleAutoApply(e.target.checked));
     document.getElementById('autoApplyBtn').addEventListener('click', () => this.startAutoApply());
     document.getElementById('openLinkedInBtn').addEventListener('click', () => this.openLinkedIn());
 
@@ -83,6 +85,9 @@ class WorkInPopup {
       
       // Verifica se onboarding foi concluído
       await this.checkOnboardingStatus();
+      
+      // Carrega estado da automação
+      await this.loadAutomationState();
       
       // Carrega vagas
       {
@@ -846,6 +851,111 @@ class WorkInPopup {
     } catch (error) {
       console.error('Failed to start onboarding:', error);
       this.showToast('Erro ao iniciar configuração', 'error');
+    }
+  }
+
+  /**
+   * Inicia coleta de vagas com scroll inteligente
+   */
+  async collectJobs() {
+    try {
+      if (!this.isLinkedInPage) {
+        this.showToast('Navegue até uma página de vagas do LinkedIn', 'warning');
+        return;
+      }
+
+      // Mostrar loading
+      this.showLoading('Coletando vagas...');
+
+      // Obter aba ativa
+      const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+      
+      if (!tab.url.includes('linkedin.com/jobs')) {
+        this.showToast('Navegue até a página de busca de vagas do LinkedIn', 'warning');
+        this.hideLoading();
+        return;
+      }
+
+      // Enviar comando para content script
+      const response = await chrome.tabs.sendMessage(tab.id, {
+        action: 'startJobCollection',
+        maxResults: 50
+      });
+
+      this.hideLoading();
+
+      if (response && response.success) {
+        this.showToast(`${response.total} vagas coletadas com sucesso!`, 'success');
+        
+        // Atualizar dados
+        await this.loadInitialData();
+        this.updateUI();
+      } else {
+        this.showToast(response?.error || 'Erro na coleta de vagas', 'error');
+      }
+
+    } catch (error) {
+      this.hideLoading();
+      console.error('Erro na coleta de vagas:', error);
+      this.showToast('Erro na coleta de vagas', 'error');
+    }
+  }
+
+  /**
+   * Toggle de automação de candidaturas
+   */
+  async toggleAutoApply(enabled) {
+    try {
+      // Salvar configuração
+      await chrome.storage.local.set({
+        'automation.enabled': enabled
+      });
+
+      // Atualizar estado do botão
+      const autoApplyBtn = document.getElementById('autoApplyBtn');
+      autoApplyBtn.disabled = !enabled;
+
+      if (enabled) {
+        this.showToast('Automação ativada', 'success');
+        
+        // Opcional: iniciar processamento automático
+        const response = await this.sendMessage({
+          action: 'processAutoApplicationQueue'
+        });
+        
+        if (response && response.success) {
+          this.showToast(`Processando ${response.processed} vagas elegíveis`, 'info');
+        }
+      } else {
+        this.showToast('Automação desativada', 'info');
+      }
+
+    } catch (error) {
+      console.error('Erro ao alterar automação:', error);
+      this.showToast('Erro ao alterar configuração', 'error');
+      
+      // Reverter estado do toggle
+      const toggle = document.getElementById('toggleAutoApply');
+      toggle.checked = !enabled;
+    }
+  }
+
+  /**
+   * Carrega estado da automação
+   */
+  async loadAutomationState() {
+    try {
+      const data = await chrome.storage.local.get(['automation.enabled']);
+      const enabled = data['automation.enabled'] || false;
+      
+      const toggle = document.getElementById('toggleAutoApply');
+      const autoApplyBtn = document.getElementById('autoApplyBtn');
+      
+      toggle.checked = enabled;
+      autoApplyBtn.disabled = !enabled;
+      
+    } catch (error) {
+      console.error('Erro ao carregar estado da automação:', error);
     }
   }
 

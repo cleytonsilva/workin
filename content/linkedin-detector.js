@@ -6,6 +6,7 @@
 class LinkedInDetector {
   constructor() {
     this.isInitialized = false;
+    this.isCollecting = false;
     this.currentJobs = new Map();
     this.observer = null;
     this.settings = null;
@@ -64,6 +65,12 @@ class LinkedInDetector {
       
       // Configura observer para mudanças na página
       this.setupPageObserver();
+      
+      // Configura listener para mensagens do popup/service worker
+      this.setupMessageListener();
+      
+      // Configura listeners de atividade do usuário para segurança
+      this.setupUserActivityListeners();
       
       this.isInitialized = true;
       WorkInUtils.LogUtils.log('info', 'LinkedIn Detector initialized successfully');
@@ -181,6 +188,125 @@ class LinkedInDetector {
         WorkInUtils.LogUtils.log('error', 'Failed to detect job in list', { error });
       }
     }
+  }
+
+  /**
+   * Inicia coleta automática de vagas com scroll inteligente
+   * @param {number} maxResults - Número máximo de vagas para coletar
+   * @returns {Promise<Object>} - Resultado da operação
+   */
+  async startJobCollection(maxResults = 50) {
+    if (this.isCollecting) {
+      return { error: 'Coleta já em andamento' };
+    }
+    
+    this.isCollecting = true;
+    
+    try {
+      // Verificar segurança antes de iniciar
+      if (window.WorkInSafetyManager) {
+        const safetyCheck = await window.WorkInSafetyManager.checkSafety('collect');
+        if (!safetyCheck.safe) {
+          throw new Error(`Verificação de segurança falhou: ${safetyCheck.reason}`);
+        }
+        
+        // Registrar operação
+        await window.WorkInSafetyManager.recordOperation('collect', { maxResults });
+      }
+      
+      // Verificar se o módulo scraper está disponível
+      if (!window.WorkInJobScraper) {
+        throw new Error('Módulo de scraping não carregado');
+      }
+      
+      // Verificar se está em página de vagas
+      if (!window.WorkInJobScraper.isLinkedInJobsPage()) {
+        throw new Error('Não está em uma página de vagas do LinkedIn');
+      }
+      
+      // Notificar início
+      this.showNotification('Iniciando coleta de vagas...', 'info');
+      
+      // Executar coleta com scroll inteligente
+      const result = await window.WorkInJobScraper.collectJobsWithScroll(maxResults);
+      
+      if (result.success) {
+        // Salvar vagas coletadas no storage
+        await this.saveCollectedJobs(result.jobs);
+        
+        // Notificar conclusão
+        this.showNotification(`${result.jobs.length} vagas coletadas com sucesso!`, 'success');
+        
+        // Log da operação
+        WorkInUtils.LogUtils.log('info', 'Job collection completed', {
+          total: result.jobs.length,
+          maxResults,
+          duration: Date.now() - result.timestamp
+        });
+        
+        return result;
+      } else {
+        throw new Error(result.error);
+      }
+      
+    } catch (error) {
+      WorkInUtils.LogUtils.log('error', 'Job collection failed', { error: error.message });
+      this.showNotification('Erro na coleta: ' + error.message, 'error');
+      return { error: error.message };
+    } finally {
+      this.isCollecting = false;
+    }
+  }
+
+  /**
+   * Scroll inteligente com simulação de comportamento humano
+   * @param {Element} container - Container da lista de vagas
+   * @param {number} maxResults - Número máximo de resultados
+   * @returns {Promise<number>} - Número de vagas carregadas
+   */
+  async performSmartScroll(container, maxResults) {
+    if (!window.WorkInJobScraper) {
+      throw new Error('Módulo de scraping não disponível');
+    }
+    
+    return await window.WorkInJobScraper.performScroll(container, maxResults);
+  }
+
+  /**
+   * Salva vagas coletadas no storage da extensão
+   * @param {Array<Object>} jobs - Array de vagas coletadas
+   */
+  async saveCollectedJobs(jobs) {
+    try {
+      // Enviar para o service worker para salvar
+      const response = await chrome.runtime.sendMessage({
+        action: 'saveCollectedJobs',
+        jobs: jobs
+      });
+      
+      if (response.error) {
+        throw new Error(response.error);
+      }
+      
+      WorkInUtils.LogUtils.log('info', 'Jobs saved to storage', { count: jobs.length });
+      
+    } catch (error) {
+      WorkInUtils.LogUtils.log('error', 'Failed to save collected jobs', { error: error.message });
+      throw error;
+    }
+  }
+
+  /**
+   * Extrai todas as vagas visíveis do container
+   * @param {Element} container - Container da lista
+   * @returns {Array<Object>} - Array de vagas extraídas
+   */
+  extractAllJobs(container) {
+    if (!window.WorkInJobScraper) {
+      throw new Error('Módulo de scraping não disponível');
+    }
+    
+    return window.WorkInJobScraper.scrapeJobs(container);
   }
 
   /**
@@ -648,6 +774,77 @@ class LinkedInDetector {
     this.observer.observe(document.body, {
       childList: true,
       subtree: true
+    });
+  }
+
+  /**
+   * Configura listener para mensagens do popup/service worker
+   */
+  setupMessageListener() {
+    chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+      this.handleMessage(message, sender, sendResponse);
+      return true; // Indica resposta assíncrona
+    });
+  }
+
+  /**
+   * Manipula mensagens recebidas do popup/service worker
+   */
+  async handleMessage(message, sender, sendResponse) {
+    try {
+      const { action, ...data } = message;
+
+      switch (action) {
+        case 'startJobCollection':
+          const result = await this.startJobCollection(data.maxResults || 50);
+          sendResponse(result);
+          break;
+
+        case 'getCollectionStatus':
+          sendResponse({
+            isCollecting: this.isCollecting,
+            currentJobsCount: this.currentJobs.size
+          });
+          break;
+
+        case 'stopCollection':
+          this.isCollecting = false;
+          sendResponse({ success: true });
+          break;
+
+        default:
+          sendResponse({ error: 'Unknown action' });
+      }
+    } catch (error) {
+      WorkInUtils.LogUtils.log('error', 'Error handling message', { error: error.message });
+      sendResponse({ error: error.message });
+    }
+  }
+
+  /**
+   * Configura listeners de atividade do usuário para segurança
+   */
+  setupUserActivityListeners() {
+    if (!window.WorkInSafetyManager) {
+      return;
+    }
+
+    // Registrar atividade em eventos de interação
+    const events = ['click', 'scroll', 'keypress', 'mousemove'];
+    
+    events.forEach(eventType => {
+      document.addEventListener(eventType, () => {
+        window.WorkInSafetyManager.recordUserActivity(eventType);
+      }, { passive: true, once: false });
+    });
+
+    // Registrar atividade em mudanças de foco
+    window.addEventListener('focus', () => {
+      window.WorkInSafetyManager.recordUserActivity('focus');
+    });
+
+    window.addEventListener('blur', () => {
+      window.WorkInSafetyManager.recordUserActivity('blur');
     });
   }
 

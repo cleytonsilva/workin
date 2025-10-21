@@ -139,6 +139,10 @@ class WorkInServiceWorker {
           sendResponse(await this.saveJob(data.jobData));
           break;
 
+        case 'saveCollectedJobs':
+          sendResponse(await this.saveCollectedJobs(data.jobs));
+          break;
+
         case 'getJob':
           sendResponse(await this.getJob(data.jobId));
           break;
@@ -229,6 +233,16 @@ class WorkInServiceWorker {
               this.queueManager.processQueue();
             }
             sendResponse({ success: true });
+          } catch (e) {
+            sendResponse({ error: e.message });
+          }
+          break;
+
+        case 'processAutoApplicationQueue':
+          try {
+            // Chamar o sistema de automação
+            const result = await this.processAutoApplicationQueue();
+            sendResponse(result);
           } catch (e) {
             sendResponse({ error: e.message });
           }
@@ -353,6 +367,49 @@ class WorkInServiceWorker {
       });
       
       return { success: true, job: savedJob };
+    } catch (error) {
+      return { error: error.message };
+    }
+  }
+
+  /**
+   * Salva múltiplas vagas coletadas
+   */
+  async saveCollectedJobs(jobs) {
+    try {
+      if (!Array.isArray(jobs) || jobs.length === 0) {
+        return { error: 'Lista de vagas inválida' };
+      }
+
+      const savedJobs = [];
+      const errors = [];
+
+      for (const job of jobs) {
+        try {
+          const savedJob = await this.storageManager.saveJob(job);
+          savedJobs.push(savedJob);
+        } catch (error) {
+          errors.push({ jobId: job.id, error: error.message });
+        }
+      }
+
+      // Log da ação em lote
+      await this.storageManager.saveLog({
+        level: 'info',
+        action: 'jobs_collected',
+        details: {
+          total: jobs.length,
+          saved: savedJobs.length,
+          errors: errors.length
+        }
+      });
+
+      return { 
+        success: true, 
+        saved: savedJobs.length,
+        errors: errors.length,
+        jobs: savedJobs
+      };
     } catch (error) {
       return { error: error.message };
     }
@@ -671,7 +728,26 @@ class WorkInServiceWorker {
   }
 
   /**
-   * Atividade recente baseada no histórico da fila
+   * Processa fila de candidaturas automáticas
+   */
+  async processAutoApplicationQueue() {
+    try {
+      // Verificar se o sistema de automação está disponível
+      if (!this.applicationManager || typeof this.applicationManager.processAutoApplicationQueue !== 'function') {
+        throw new Error('Sistema de automação não disponível');
+      }
+      
+      // Delegar para o sistema de automação
+      return await this.applicationManager.processAutoApplicationQueue();
+      
+    } catch (error) {
+      console.error('Erro ao processar fila de candidaturas:', error);
+      return { success: false, error: error.message };
+    }
+  }
+
+  /**
+   * Obtém atividade recente baseada no histórico da fila
    */
   async getRecentActivity(limit = 5) {
     try {
