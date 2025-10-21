@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WorkIn - Teste de Onboarding</title>
+    <link rel="stylesheet" href="onboarding.css">
+    <style>
+        /* Mock Chrome API para teste */
+        .demo-note {
+            background-color: #fef3c7;
+            border: 1px solid #f59e0b;
+            color: #92400e;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            margin-bottom: 1.5rem;
+            font-size: 0.875rem;
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br min-h-screen">
+    <div class="max-w-4xl mx-auto px-6 py-6">
+        <!-- Demo Notice -->
+        <div class="demo-note">
+            <strong>🧪 Modo de Teste:</strong> Esta é uma demonstração da interface de onboarding. 
+            As funcionalidades de Chrome Extension estão simuladas para fins de teste.
+        </div>
+
+        <!-- Header -->
+        <div class="bg-white rounded-lg shadow-lg p-8 mb-6">
+            <div class="flex items-center justify-between mb-6">
+                <div>
+                    <h1 class="text-2xl font-bold text-gray-900">WorkIn - Configuração Inicial</h1>
+                    <p class="text-gray-600 mt-1">Configure sua extensão para começar a aplicar automaticamente para vagas</p>
+                </div>
+                <div class="text-right">
+                    <div class="text-sm text-gray-500">Progresso</div>
+                    <div class="text-lg font-semibold text-blue-600">
+                        <span id="progressText">33%</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Progress Bar -->
+            <div class="w-full bg-gray-200 rounded-full h-2 mb-6">
+                <div id="progressBar" class="bg-blue-600 h-2 rounded-full transition-all" style="width: 33%"></div>
+            </div>
+
+            <!-- Step Indicator -->
+            <div class="flex justify-between text-sm text-gray-500 mb-8">
+                <span class="font-medium text-blue-600">Etapa <span id="currentStep">1</span> de 3</span>
+                <span>Perfil → Preferências → Descoberta</span>
+            </div>
+        </div>
+
+        <!-- Step 1: Profile URL Input -->
+        <div id="step1" class="bg-white rounded-lg shadow-lg p-8">
+            <div class="mb-6">
+                <h2 class="text-xl font-semibold text-gray-900 mb-2">
+                    📋 Etapa 1: Perfil LinkedIn
+                </h2>
+                <p class="text-gray-600">
+                    Insira a URL do seu perfil LinkedIn para que possamos extrair suas informações automaticamente.
+                </p>
+            </div>
+
+            <!-- URL Input Section -->
+            <div class="space-y-6">
+                <div>
+                    <label for="profileUrl" class="block text-sm font-medium text-gray-700 mb-2">
+                        URL do Perfil LinkedIn
+                    </label>
+                    <div class="url-input-container">
+                        <input 
+                            type="text" 
+                            id="profileUrl" 
+                            placeholder="https://www.linkedin.com/in/seu-perfil"
+                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                        >
+                        <!-- Validation Icons -->
+                        <div id="urlValidIcon" class="url-validation-icon text-green-600 hidden">
+                            ✓
+                        </div>
+                        <div id="urlInvalidIcon" class="url-validation-icon text-red-600 hidden">
+                            ✗
+                        </div>
+                    </div>
+                    <div class="url-help-text">
+                        <strong>Como encontrar sua URL:</strong><br>
+                        1. Acesse seu perfil no LinkedIn<br>
+                        2. Copie a URL da barra de endereços<br>
+                        3. Cole aqui (ex: https://www.linkedin.com/in/joao-silva)
+                    </div>
+                </div>
+
+                <!-- Scan Button -->
+                <div class="flex justify-center">
+                    <button 
+                        id="startScanBtn" 
+                        disabled
+                        class="bg-blue-600 text-white px-6 py-3 rounded-lg font-medium hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                    >
+                        🔍 Analisar Perfil
+                    </button>
+                </div>
+
+                <!-- Scan States -->
+                <div id="scanIdle" class="text-center text-gray-500">
+                    <p>Insira a URL do seu perfil LinkedIn para começar</p>
+                </div>
+
+                <div id="scanProgress" class="hidden">
+                    <div class="text-center">
+                        <div class="animate-spin inline-block w-8 h-8 border-4 border-blue-600 border-t-transparent rounded-full mb-4"></div>
+                        <p id="scanProgressText" class="text-blue-600 font-medium">Navegando para o perfil...</p>
+                        <div class="mt-4 space-y-2">
+                            <div class="progress-step">
+                                <div class="progress-step-icon">1</div>
+                                <span>Navegando para o perfil LinkedIn</span>
+                            </div>
+                            <div class="progress-step">
+                                <div class="progress-step-icon">2</div>
+                                <span>Extraindo informações do perfil</span>
+                            </div>
+                            <div class="progress-step">
+                                <div class="progress-step-icon">3</div>
+                                <span>Analisando experiência e habilidades</span>
+                            </div>
+                            <div class="progress-step">
+                                <div class="progress-step-icon">4</div>
+                                <span>Iniciando busca por vagas</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="scanComplete" class="hidden">
+                    <div class="bg-green-50 border border-green-200 rounded-lg p-4">
+                        <div class="flex items-center mb-3">
+                            <div class="w-8 h-8 bg-green-600 text-white rounded-full flex items-center justify-center mr-3">
+                                ✓
+                            </div>
+                            <h3 class="text-lg font-medium text-green-800">Perfil Analisado com Sucesso!</h3>
+                        </div>
+                        
+                        <!-- Profile Summary -->
+                        <div id="profileSummary" class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+                            <div>
+                                <h4 class="font-medium text-gray-900">Informações Básicas</h4>
+                                <div class="text-sm text-gray-600 space-y-1">
+                                    <div><strong>Nome:</strong> <span id="profileName">João Silva</span></div>
+                                    <div><strong>Cargo:</strong> <span id="profileHeadline">Desenvolvedor Full Stack</span></div>
+                                    <div><strong>Localização:</strong> <span id="profileLocation">São Paulo, SP</span></div>
+                                </div>
+                            </div>
+                            <div>
+                                <h4 class="font-medium text-gray-900">Análise Profissional</h4>
+                                <div class="text-sm text-gray-600 space-y-1">
+                                    <div><strong>Experiência:</strong> <span id="profileExperience">5 anos</span></div>
+                                    <div><strong>Senioridade:</strong> <span id="profileSeniority">Pleno</span></div>
+                                    <div><strong>Área:</strong> <span id="profileIndustry">Tecnologia</span></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="scanError" class="hidden">
+                    <div class="bg-red-50 border border-red-200 rounded-lg p-4">
+                        <div class="flex items-center mb-3">
+                            <div class="w-8 h-8 bg-red-600 text-white rounded-full flex items-center justify-center mr-3">
+                                ✗
+                            </div>
+                            <h3 class="text-lg font-medium text-red-800">Erro na Análise</h3>
+                        </div>
+                        <p id="scanErrorText" class="text-red-600 text-sm">
+                            Não foi possível analisar o perfil. Verifique se a URL está correta.
+                        </p>
+                        <div class="mt-4 space-x-3">
+                            <button id="retryScanBtn" class="bg-red-600 text-white px-4 py-2 rounded text-sm hover:bg-red-700">
+                                🔄 Tentar Novamente
+                            </button>
+                            <button id="manualSetupBtn" class="bg-gray-600 text-white px-4 py-2 rounded text-sm hover:bg-gray-700">
+                                ⚙️ Configuração Manual
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Navigation -->
+            <div class="flex justify-between mt-8">
+                <button class="text-gray-500 hover:text-gray-700 underline" onclick="skipDemo()">
+                    Pular configuração
+                </button>
+                <button 
+                    id="step1Next" 
+                    disabled
+                    class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                    Próximo →
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Mock implementation for testing
+        class MockOnboarding {
+            constructor() {
+                this.profileUrl = '';
+                this.bindEvents();
+            }
+
+            bindEvents() {
+                const urlInput = document.getElementById('profileUrl');
+                const startBtn = document.getElementById('startScanBtn');
+                const nextBtn = document.getElementById('step1Next');
+
+                urlInput.addEventListener('input', (e) => this.validateProfileUrl(e.target.value));
+                startBtn.addEventListener('click', () => this.startMockScan());
+                nextBtn.addEventListener('click', () => this.showNextStep());
+            }
+
+            validateProfileUrl(url) {
+                const urlInput = document.getElementById('profileUrl');
+                const validIcon = document.getElementById('urlValidIcon');
+                const invalidIcon = document.getElementById('urlInvalidIcon');
+                const startBtn = document.getElementById('startScanBtn');
+                
+                if (!url.trim()) {
+                    validIcon.classList.add('hidden');
+                    invalidIcon.classList.add('hidden');
+                    startBtn.disabled = true;
+                    urlInput.classList.remove('border-green-500', 'border-red-500');
+                    return;
+                }
+                
+                if (this.isValidLinkedInUrl(url)) {
+                    validIcon.classList.remove('hidden');
+                    invalidIcon.classList.add('hidden');
+                    startBtn.disabled = false;
+                    urlInput.classList.remove('border-red-500');
+                    urlInput.classList.add('border-green-500');
+                } else {
+                    validIcon.classList.add('hidden');
+                    invalidIcon.classList.remove('hidden');
+                    startBtn.disabled = true;
+                    urlInput.classList.remove('border-green-500');
+                    urlInput.classList.add('border-red-500');
+                }
+            }
+
+            isValidLinkedInUrl(url) {
+                try {
+                    const urlObj = new URL(url);
+                    return urlObj.hostname.includes('linkedin.com') && 
+                           (urlObj.pathname.includes('/in/') || urlObj.pathname.includes('/profile/'));
+                } catch {
+                    return false;
+                }
+            }
+
+            async startMockScan() {
+                this.showScanState('progress');
+                
+                // Simulate scanning process
+                const steps = [
+                    { text: 'Navegando para o perfil LinkedIn...', delay: 1000 },
+                    { text: 'Extraindo informações básicas...', delay: 1500 },
+                    { text: 'Analisando experiência profissional...', delay: 1000 },
+                    { text: 'Identificando habilidades...', delay: 1000 },
+                    { text: 'Finalizando análise...', delay: 800 }
+                ];
+
+                for (let i = 0; i < steps.length; i++) {
+                    document.getElementById('scanProgressText').textContent = steps[i].text;
+                    
+                    // Update progress steps
+                    const progressSteps = document.querySelectorAll('.progress-step');
+                    if (progressSteps[i]) {
+                        progressSteps[i].classList.add('active');
+                        if (i > 0 && progressSteps[i-1]) {
+                            progressSteps[i-1].classList.remove('active');
+                            progressSteps[i-1].classList.add('completed');
+                        }
+                    }
+                    
+                    await new Promise(resolve => setTimeout(resolve, steps[i].delay));
+                }
+
+                // Show success
+                this.showScanState('complete');
+                document.getElementById('step1Next').disabled = false;
+                
+                // Show notification
+                this.showNotification('Perfil analisado com sucesso! Busca por vagas iniciada automaticamente.', 'success');
+            }
+
+            showScanState(state) {
+                const states = ['idle', 'progress', 'complete', 'error'];
+                states.forEach(s => {
+                    const element = document.getElementById(`scan${s.charAt(0).toUpperCase() + s.slice(1)}`);
+                    if (element) {
+                        element.classList.add('hidden');
+                    }
+                });
+                
+                const activeElement = document.getElementById(`scan${state.charAt(0).toUpperCase() + state.slice(1)}`);
+                if (activeElement) {
+                    activeElement.classList.remove('hidden');
+                }
+            }
+
+            showNotification(message, type = 'info') {
+                const notification = document.createElement('div');
+                notification.className = `notification notification-${type} fixed top-4 right-4 z-50 p-4 rounded-lg shadow-lg max-w-sm`;
+                
+                const styles = {
+                    success: 'bg-green-100 border border-green-400 text-green-700',
+                    error: 'bg-red-100 border border-red-400 text-red-700',
+                    warning: 'bg-yellow-100 border border-yellow-400 text-yellow-700',
+                    info: 'bg-blue-100 border border-blue-400 text-blue-700'
+                };
+                
+                notification.className += ` ${styles[type] || styles.info}`;
+                notification.textContent = message;
+                
+                document.body.appendChild(notification);
+                
+                setTimeout(() => {
+                    if (notification.parentNode) {
+                        notification.parentNode.removeChild(notification);
+                    }
+                }, 4000);
+            }
+
+            showNextStep() {
+                alert('Demo: Próxima etapa seria a configuração de preferências!');
+            }
+        }
+
+        function skipDemo() {
+            alert('Demo: Configuração pulada!');
+        }
+
+        // Initialize mock onboarding
+        document.addEventListener('DOMContentLoaded', () => {
+            new MockOnboarding();
+        });
+    </script>
+</body>
+</html>

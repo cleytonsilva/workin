@@ -1,0 +1,51 @@
+# Dependencies
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Testing
+coverage/
+*.test.js
+*.spec.js
+
+# Build outputs
+dist/
+build/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Environment variables
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Development tools
+test-extension.js
+test-corrections.js
+test-onboarding.js
+validate-manifest.js
+
+# Internal documentation (keep public docs)
+.trae/
+CORRECOES_EXTENSAO.md
+
+# Temporary files
+*.tmp
+*.temp
+
+.cursor/rules/kluster-code-verify.mdc
+.kluster

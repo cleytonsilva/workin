@@ -1,0 +1,76 @@
+{
+  "manifest_version": 3,
+  "name": "WorkIn - Automação de Candidaturas LinkedIn",
+  "version": "1.0.0",
+  "description": "Automatize e otimize suas candidaturas no LinkedIn com análise inteligente de compatibilidade",
+  
+  "permissions": [
+    "storage",
+    "activeTab",
+    "scripting",
+    "alarms",
+    "contextMenus",
+    "notifications",
+    "tabs",
+    "declarativeContent"
+  ],
+  
+  "host_permissions": [
+    "https://*.linkedin.com/*"
+  ],
+  
+  "background": {
+    "service_worker": "background/service-worker.js"
+  },
+  
+  "content_scripts": [
+    {
+      "matches": ["https://*.linkedin.com/*"],
+      "js": [
+        "shared/types.js",
+        "shared/utils.js",
+        "content/linkedin-detector.js"
+      ],
+      "css": ["content/workin-overlay.css"],
+      "run_at": "document_idle"
+    }
+  ],
+  
+  "action": {
+    "default_popup": "popup/popup.html",
+    "default_title": "WorkIn - Candidaturas Inteligentes",
+    "default_icon": {
+      "16": "src/icons/icon16.svg",
+      "32": "src/icons/icon32.svg",
+      "48": "src/icons/icon48.svg",
+      "128": "src/icons/icon128.svg"
+    }
+  },
+  
+  "options_page": "options/options.html",
+  
+  "icons": {
+    "16": "src/icons/icon16.svg",
+    "32": "src/icons/icon32.svg",
+    "48": "src/icons/icon48.svg",
+    "128": "src/icons/icon128.svg"
+  },
+  
+  "content_security_policy": {
+    "extension_pages": "script-src 'self'; object-src 'self'; connect-src 'self' https://*.linkedin.com; img-src 'self' data: https://*.linkedin.com; style-src 'self' 'unsafe-inline';"
+  },
+  
+  "web_accessible_resources": [
+    {
+      "resources": [
+        "src/icons/*",
+        "content/workin-overlay.css",
+        "onboarding/*",
+        "content/linkedin-profile-parser.js",
+        "background/profile-analyzer.js",
+        "utils/logger.js"
+      ],
+      "matches": ["https://*.linkedin.com/*"]
+    }
+  ]
+}

@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WorkIn - Configurações</title>
+  <link rel="stylesheet" href="../src/options/options.css">
+</head>
+<body class="bg-gray-50 min-h-screen">
+  <!-- Header -->
+  <header class="bg-white shadow-sm border-b border-gray-200">
+    <div class="max-w-4xl mx-auto px-6 py-4">
+      <div class="flex items-center justify-between">
+        <div class="flex items-center space-x-3">
+          <img src="../src/icons/icon48.svg" alt="WorkIn" class="w-10 h-10">
+          <div>
+            <h1 class="text-xl font-bold text-gray-900">WorkIn</h1>
+            <p class="text-sm text-gray-600">Configurações da Extensão</p>
+          </div>
+        </div>
+        <div class="flex items-center space-x-3">
+          <button id="exportBtn" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm">
+            Exportar Dados
+          </button>
+          <button id="importBtn" class="px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white rounded-lg text-sm">
+            Importar Dados
+          </button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Navigation -->
+  <nav class="bg-white border-b border-gray-200">
+    <div class="max-w-4xl mx-auto px-6">
+      <div class="flex space-x-8">
+        <button class="nav-tab active py-4 px-2 border-b-2 border-blue-500 text-blue-600 font-medium text-sm" data-tab="profile">
+          Perfil
+        </button>
+        <button class="nav-tab py-4 px-2 border-b-2 border-transparent text-gray-500 hover:text-gray-700 font-medium text-sm" data-tab="automation">
+          Automação
+        </button>
+        <button class="nav-tab py-4 px-2 border-b-2 border-transparent text-gray-500 hover:text-gray-700 font-medium text-sm" data-tab="matching">
+          Compatibilidade
+        </button>
+        <button class="nav-tab py-4 px-2 border-b-2 border-transparent text-gray-500 hover:text-gray-700 font-medium text-sm" data-tab="privacy">
+          Privacidade
+        </button>
+        <button class="nav-tab py-4 px-2 border-b-2 border-transparent text-gray-500 hover:text-gray-700 font-medium text-sm" data-tab="advanced">
+          Avançado
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Main Content -->
+  <main class="max-w-4xl mx-auto px-6 py-8">
+    <!-- Profile Tab -->
+    <div id="profileTab" class="tab-content">
+      <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+        <h2 class="text-lg font-semibold text-gray-900 mb-6">Informações do Perfil</h2>
+        
+        <form id="profileForm" class="space-y-6">
+          <!-- Informações Básicas -->
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <label for="fullName" class="block text-sm font-medium text-gray-700 mb-2">Nome Completo</label>
+              <input type="text" id="fullName" name="fullName" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+            </div>
+            <div>
+              <label for="email" class="block text-sm font-medium text-gray-700 mb-2">E-mail</label>
+              <input type="email" id="email" name="email" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <label for="phone" class="block text-sm font-medium text-gray-700 mb-2">Telefone</label>
+              <input type="tel" id="phone" name="phone" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+            </div>
+            <div>
+              <label for="location" class="block text-sm font-medium text-gray-700 mb-2">Localização</label>
+              <input type="text" id="location" name="location" placeholder="Cidade, Estado" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+            </div>
+          </div>
+
+          <!-- Experiência Profissional -->
+          <div>
+            <label for="currentPosition" class="block text-sm font-medium text-gray-700 mb-2">Cargo Atual</label>
+            <input type="text" id="currentPosition" name="currentPosition" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <label for="experienceYears" class="block text-sm font-medium text-gray-700 mb-2">Anos de Experiência</label>
+              <select id="experienceYears" name="experienceYears" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                <option value="">Selecione...</option>
+                <option value="0-1">0-1 anos</option>
+                <option value="2-3">2-3 anos</option>
+                <option value="4-5">4-5 anos</option>
+                <option value="6-10">6-10 anos</option>
+                <option value="10+">Mais de 10 anos</option>
+              </select>
+            </div>
+            <div>
+              <label for="seniorityLevel" class="block text-sm font-medium text-gray-700 mb-2">Nível de Senioridade</label>
+              <select id="seniorityLevel" name="seniorityLevel" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                <option value="">Selecione...</option>
+                <option value="junior">Júnior</option>
+                <option value="pleno">Pleno</option>
+                <option value="senior">Sênior</option>
+                <option value="lead">Lead</option>
+                <option value="manager">Gerente</option>
+                <option value="director">Diretor</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Habilidades -->
+          <div>
+            <label for="skills" class="block text-sm font-medium text-gray-700 mb-2">Habilidades</label>
+            <textarea id="skills" name="skills" rows="3" placeholder="Digite suas habilidades separadas por vírgula (ex: JavaScript, React, Node.js)" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"></textarea>
+            <p class="text-sm text-gray-500 mt-1">Separe as habilidades por vírgula</p>
+          </div>
+
+          <!-- Preferências de Trabalho -->
+          <div>
+            <h3 class="text-md font-medium text-gray-900 mb-4">Preferências de Trabalho</h3>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div>
+                <label class="flex items-center">
+                  <input type="checkbox" id="remoteWork" name="workPreferences" value="remote" class="rounded border-gray-300 text-blue-600 focus:ring-blue-500">
+                  <span class="ml-2 text-sm text-gray-700">Trabalho Remoto</span>
+                </label>
+              </div>
+              <div>
+                <label class="flex items-center">
+                  <input type="checkbox" id="hybridWork" name="workPreferences" value="hybrid" class="rounded border-gray-300 text-blue-600 focus:ring-blue-500">
+                  <span class="ml-2 text-sm text-gray-700">Trabalho Híbrido</span>
+                </label>
+              </div>
+              <div>
+                <label class="flex items-center">
+                  <input type="checkbox" id="onsiteWork" name="workPreferences" value="onsite" class="rounded border-gray-300 text-blue-600 focus:ring-blue-500">
+                  <span class="ml-2 text-sm text-gray-700">Trabalho Presencial</span>
+                </label>
+              </div>
+            </div>
+          </div>
+
+          <div class="flex justify-end">
+            <button type="submit" class="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium">
+              Salvar Perfil
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Automation Tab -->
+    <div id="automationTab" class="tab-content hidden">
+      <div class="space-y-6">
+        <!-- Configurações de Automação -->
+        <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+          <h2 class="text-lg font-semibold text-gray-900 mb-6">Configurações de Automação</h2>
+          
+          <form id="automationForm" class="space-y-6">
+            <!-- Limites de Candidatura -->
+            <div>
+              <h3 class="text-md font-medium text-gray-900 mb-4">Limites de Candidatura</h3>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <label for="maxApplicationsPerHour" class="block text-sm font-medium text-gray-700 mb-2">Máximo por Hora</label>
+                  <input type="number" id="maxApplicationsPerHour" name="maxApplicationsPerHour" min="1" max="50" value="20" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                </div>
+                <div>
+                  <label for="maxApplicationsPerDay" class="block text-sm font-medium text-gray-700 mb-2">Máximo por Dia</label>
+                  <input type="number" id="maxApplicationsPerDay" name="maxApplicationsPerDay" min="1" max="200" value="100" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                </div>
+              </div>
+            </div>
+
+            <!-- Delays -->
+            <div>
+              <h3 class="text-md font-medium text-gray-900 mb-4">Delays entre Ações</h3>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <label for="minDelay" class="block text-sm font-medium text-gray-700 mb-2">Delay Mínimo (segundos)</label>
+                  <input type="number" id="minDelay" name="minDelay" min="1" max="60" value="3" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                </div>
+                <div>
+                  <label for="maxDelay" class="block text-sm font-medium text-gray-700 mb-2">Delay Máximo (segundos)</label>
+                  <input type="number" id="maxDelay" name="maxDelay" min="1" max="120" value="8" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                </div>
+              </div>
+            </div>
+
+            <!-- Filtros Automáticos -->
+            <div>
+              <h3 class="text-md font-medium text-gray-900 mb-4">Filtros Automáticos</h3>
+              <div class="space-y-4">
+                <div>
+                  <label class="flex items-center">
+                    <input type="checkbox" id="onlyEasyApply" name="onlyEasyApply" class="rounded border-gray-300 text-blue-600 focus:ring-blue-500">
+                    <span class="ml-2 text-sm text-gray-700">Apenas vagas com "Easy Apply"</span>
+                  </label>
+                </div>
+                <div>
+                  <label for="minCompatibilityScore" class="block text-sm font-medium text-gray-700 mb-2">Score Mínimo de Compatibilidade (%)</label>
+                  <input type="range" id="minCompatibilityScore" name="minCompatibilityScore" min="0" max="100" value="60" class="w-full">
+                  <div class="flex justify-between text-sm text-gray-500">
+                    <span>0%</span>
+                    <span id="minScoreValue">60%</span>
+                    <span>100%</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Horários de Funcionamento -->
+            <div>
+              <h3 class="text-md font-medium text-gray-900 mb-4">Horários de Funcionamento</h3>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <label for="startTime" class="block text-sm font-medium text-gray-700 mb-2">Horário de Início</label>
+                  <input type="time" id="startTime" name="startTime" value="09:00" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                </div>
+                <div>
+                  <label for="endTime" class="block text-sm font-medium text-gray-700 mb-2">Horário de Fim</label>
+                  <input type="time" id="endTime" name="endTime" value="18:00" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                </div>
+              </div>
+              <div class="mt-4">
+                <label class="flex items-center">
+                  <input type="checkbox" id="weekendsEnabled" name="weekendsEnabled" class="rounded border-gray-300 text-blue-600 focus:ring-blue-500">
+                  <span class="ml-2 text-sm text-gray-700">Funcionar nos fins de semana</span>
+                </label>
+              </div>
+            </div>
+
+            <div class="flex justify-end">
+              <button type="submit" class="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium">
+                Salvar Configurações
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- Matching Tab -->
+    <div id="matchingTab" class="tab-content hidden">
+      <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+        <h2 class="text-lg font-semibold text-gray-900 mb-6">Configurações de Compatibilidade</h2>
+        
+        <form id="matchingForm" class="space-y-6">
+          <!-- Pesos dos Fatores -->
+          <div>
+            <h3 class="text-md font-medium text-gray-900 mb-4">Pesos dos Fatores de Compatibilidade</h3>
+            <div class="space-y-4">
+              <div>
+                <label for="skillsWeight" class="block text-sm font-medium text-gray-700 mb-2">Habilidades</label>
+                <input type="range" id="skillsWeight" name="skillsWeight" min="0" max="100" value="30" class="w-full">
+                <div class="flex justify-between text-sm text-gray-500">
+                  <span>0%</span>
+                  <span id="skillsWeightValue">30%</span>
+                  <span>100%</span>
+                </div>
+              </div>
+              
+              <div>
+                <label for="experienceWeight" class="block text-sm font-medium text-gray-700 mb-2">Experiência</label>
+                <input type="range" id="experienceWeight" name="experienceWeight" min="0" max="100" value="25" class="w-full">
+                <div class="flex justify-between text-sm text-gray-500">
+                  <span>0%</span>
+                  <span id="experienceWeightValue">25%</span>
+                  <span>100%</span>
+                </div>
+              </div>
+              
+              <div>
+                <label for="locationWeight" class="block text-sm font-medium text-gray-700 mb-2">Localização</label>
+                <input type="range" id="locationWeight" name="locationWeight" min="0" max="100" value="20" class="w-full">
+                <div class="flex justify-between text-sm text-gray-500">
+                  <span>0%</span>
+                  <span id="locationWeightValue">20%</span>
+                  <span>100%</span>
+                </div>
+              </div>
+              
+              <div>
+                <label for="jobTypeWeight" class="block text-sm font-medium text-gray-700 mb-2">Tipo de Trabalho</label>
+                <input type="range" id="jobTypeWeight" name="jobTypeWeight" min="0" max="100" value="15" class="w-full">
+                <div class="flex justify-between text-sm text-gray-500">
+                  <span>0%</span>
+                  <span id="jobTypeWeightValue">15%</span>
+                  <span>100%</span>
+                </div>
+              </div>
+              
+              <div>
+                <label for="seniorityWeight" class="block text-sm font-medium text-gray-700 mb-2">Senioridade</label>
+                <input type="range" id="seniorityWeight" name="seniorityWeight" min="0" max="100" value="10" class="w-full">
+                <div class="flex justify-between text-sm text-gray-500">
+                  <span>0%</span>
+                  <span id="seniorityWeightValue">10%</span>
+                  <span>100%</span>
+                </div>
+              </div>
+            </div>
+            
+            <div class="mt-4 p-3 bg-blue-50 rounded-lg">
+              <p class="text-sm text-blue-700">
+                <strong>Total:</strong> <span id="totalWeight">100%</span>
+              </p>
+              <p class="text-xs text-blue-600 mt-1">
+                Os pesos são automaticamente normalizados para somar 100%
+              </p>
+            </div>
+          </div>
+
+          <!-- Palavras-chave Importantes -->
+          <div>
+            <label for="importantKeywords" class="block text-sm font-medium text-gray-700 mb-2">Palavras-chave Importantes</label>
+            <textarea id="importantKeywords" name="importantKeywords" rows="3" placeholder="Digite palavras-chave importantes separadas por vírgula" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"></textarea>
+            <p class="text-sm text-gray-500 mt-1">Vagas com essas palavras-chave receberão pontuação extra</p>
+          </div>
+
+          <!-- Palavras-chave Negativas -->
+          <div>
+            <label for="negativeKeywords" class="block text-sm font-medium text-gray-700 mb-2">Palavras-chave Negativas</label>
+            <textarea id="negativeKeywords" name="negativeKeywords" rows="3" placeholder="Digite palavras-chave a evitar separadas por vírgula" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"></textarea>
+            <p class="text-sm text-gray-500 mt-1">Vagas com essas palavras-chave receberão pontuação reduzida</p>
+          </div>
+
+          <div class="flex justify-end">
+            <button type="submit" class="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium">
+              Salvar Configurações
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Privacy Tab -->
+    <div id="privacyTab" class="tab-content hidden">
+      <div class="space-y-6">
+        <!-- Configurações de Privacidade -->
+        <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+          <h2 class="text-lg font-semibold text-gray-900 mb-6">Configurações de Privacidade</h2>
+          
+          <form id="privacyForm" class="space-y-6">
+            <!-- Criptografia -->
+            <div>
+              <h3 class="text-md font-medium text-gray-900 mb-4">Criptografia de Dados</h3>
+              <div class="space-y-4">
+                <div>
+                  <label class="flex items-center">
+                    <input type="checkbox" id="encryptData" name="encryptData" checked disabled class="rounded border-gray-300 text-blue-600 focus:ring-blue-500">
+                    <span class="ml-2 text-sm text-gray-700">Criptografar dados locais (AES-256-GCM)</span>
+                  </label>
+                  <p class="text-xs text-gray-500 ml-6">Esta opção está sempre ativa para sua segurança</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Retenção de Dados -->
+            <div>
+              <h3 class="text-md font-medium text-gray-900 mb-4">Retenção de Dados</h3>
+              <div class="space-y-4">
+                <div>
+                  <label for="dataRetentionDays" class="block text-sm font-medium text-gray-700 mb-2">Manter dados por (dias)</label>
+                  <select id="dataRetentionDays" name="dataRetentionDays" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                    <option value="30">30 dias</option>
+                    <option value="60">60 dias</option>
+                    <option value="90" selected>90 dias</option>
+                    <option value="180">180 dias</option>
+                    <option value="365">1 ano</option>
+                    <option value="-1">Nunca excluir</option>
+                  </select>
+                </div>
+                
+                <div>
+                  <label class="flex items-center">
+                    <input type="checkbox" id="autoCleanup" name="autoCleanup" checked class="rounded border-gray-300 text-blue-600 focus:ring-blue-500">
+                    <span class="ml-2 text-sm text-gray-700">Limpeza automática de dados antigos</span>
+                  </label>
+                </div>
+              </div>
+            </div>
+
+            <!-- Logs -->
+            <div>
+              <h3 class="text-md font-medium text-gray-900 mb-4">Logs de Atividade</h3>
+              <div class="space-y-4">
+                <div>
+                  <label for="logLevel" class="block text-sm font-medium text-gray-700 mb-2">Nível de Log</label>
+                  <select id="logLevel" name="logLevel" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                    <option value="error">Apenas Erros</option>
+                    <option value="warn">Avisos e Erros</option>
+                    <option value="info" selected>Informações, Avisos e Erros</option>
+                    <option value="debug">Todos os Logs (Debug)</option>
+                  </select>
+                </div>
+                
+                <div>
+                  <label class="flex items-center">
+                    <input type="checkbox" id="enableAnalytics" name="enableAnalytics" class="rounded border-gray-300 text-blue-600 focus:ring-blue-500">
+                    <span class="ml-2 text-sm text-gray-700">Permitir coleta de dados de uso anônimos</span>
+                  </label>
+                  <p class="text-xs text-gray-500 ml-6">Ajuda a melhorar a extensão sem comprometer sua privacidade</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="flex justify-end">
+              <button type="submit" class="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium">
+                Salvar Configurações
+              </button>
+            </div>
+          </form>
+        </div>
+
+        <!-- Ações de Privacidade -->
+        <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+          <h3 class="text-md font-medium text-gray-900 mb-4">Ações de Privacidade</h3>
+          <div class="space-y-4">
+            <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+              <div>
+                <h4 class="text-sm font-medium text-gray-900">Limpar Todos os Dados</h4>
+                <p class="text-xs text-gray-500">Remove todos os dados armazenados pela extensão</p>
+              </div>
+              <button id="clearAllDataBtn" class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg text-sm">
+                Limpar Dados
+              </button>
+            </div>
+            
+            <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+              <div>
+                <h4 class="text-sm font-medium text-gray-900">Resetar Configurações</h4>
+                <p class="text-xs text-gray-500">Restaura todas as configurações para os valores padrão</p>
+              </div>
+              <button id="resetSettingsBtn" class="px-4 py-2 bg-yellow-600 hover:bg-yellow-700 text-white rounded-lg text-sm">
+                Resetar
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Advanced Tab -->
+    <div id="advancedTab" class="tab-content hidden">
+      <div class="space-y-6">
+        <!-- Configurações Avançadas -->
+        <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+          <h2 class="text-lg font-semibold text-gray-900 mb-6">Configurações Avançadas</h2>
+          
+          <form id="advancedForm" class="space-y-6">
+            <!-- Performance -->
+            <div>
+              <h3 class="text-md font-medium text-gray-900 mb-4">Performance</h3>
+              <div class="space-y-4">
+                <div>
+                  <label for="maxConcurrentTabs" class="block text-sm font-medium text-gray-700 mb-2">Máximo de Abas Simultâneas</label>
+                  <input type="number" id="maxConcurrentTabs" name="maxConcurrentTabs" min="1" max="10" value="3" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                </div>
+                
+                <div>
+                  <label for="cacheSize" class="block text-sm font-medium text-gray-700 mb-2">Tamanho do Cache (MB)</label>
+                  <input type="number" id="cacheSize" name="cacheSize" min="10" max="500" value="100" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                </div>
+              </div>
+            </div>
+
+            <!-- Debugging -->
+            <div>
+              <h3 class="text-md font-medium text-gray-900 mb-4">Debugging</h3>
+              <div class="space-y-4">
+                <div>
+                  <label class="flex items-center">
+                    <input type="checkbox" id="enableDebugMode" name="enableDebugMode" class="rounded border-gray-300 text-blue-600 focus:ring-blue-500">
+                    <span class="ml-2 text-sm text-gray-700">Modo Debug</span>
+                  </label>
+                  <p class="text-xs text-gray-500 ml-6">Ativa logs detalhados para diagnóstico</p>
+                </div>
+                
+                <div>
+                  <label class="flex items-center">
+                    <input type="checkbox" id="enableConsoleOutput" name="enableConsoleOutput" class="rounded border-gray-300 text-blue-600 focus:ring-blue-500">
+                    <span class="ml-2 text-sm text-gray-700">Output no Console</span>
+                  </label>
+                  <p class="text-xs text-gray-500 ml-6">Mostra logs no console do navegador</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Backup -->
+            <div>
+              <h3 class="text-md font-medium text-gray-900 mb-4">Backup Automático</h3>
+              <div class="space-y-4">
+                <div>
+                  <label class="flex items-center">
+                    <input type="checkbox" id="enableAutoBackup" name="enableAutoBackup" checked class="rounded border-gray-300 text-blue-600 focus:ring-blue-500">
+                    <span class="ml-2 text-sm text-gray-700">Backup Automático</span>
+                  </label>
+                </div>
+                
+                <div>
+                  <label for="backupFrequency" class="block text-sm font-medium text-gray-700 mb-2">Frequência do Backup</label>
+                  <select id="backupFrequency" name="backupFrequency" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                    <option value="daily" selected>Diário</option>
+                    <option value="weekly">Semanal</option>
+                    <option value="monthly">Mensal</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <div class="flex justify-end">
+              <button type="submit" class="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium">
+                Salvar Configurações
+              </button>
+            </div>
+          </form>
+        </div>
+
+        <!-- Informações do Sistema -->
+        <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+          <h3 class="text-md font-medium text-gray-900 mb-4">Informações do Sistema</h3>
+          <div class="space-y-3">
+            <div class="flex justify-between text-sm">
+              <span class="text-gray-600">Versão da Extensão:</span>
+              <span class="font-medium" id="extensionVersion">1.0.0</span>
+            </div>
+            <div class="flex justify-between text-sm">
+              <span class="text-gray-600">Dados Armazenados:</span>
+              <span class="font-medium" id="storageUsed">Calculando...</span>
+            </div>
+            <div class="flex justify-between text-sm">
+              <span class="text-gray-600">Última Sincronização:</span>
+              <span class="font-medium" id="lastSync">Nunca</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Toast Container -->
+  <div id="toastContainer" class="fixed top-4 right-4 space-y-2 z-50"></div>
+
+  <!-- Loading Overlay -->
+  <div id="loadingOverlay" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden z-50">
+    <div class="bg-white p-6 rounded-lg shadow-lg">
+      <div class="flex items-center space-x-3">
+        <div class="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-600"></div>
+        <span class="text-gray-700">Processando...</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Hidden File Input for Import -->
+  <input type="file" id="importFileInput" accept=".json" class="hidden">
+
+  <!-- Scripts -->
+  <script src="../shared/types.js"></script>
+  <script src="../shared/utils.js"></script>
+  <script src="../src/options/options.js"></script>
+</body>
+</html>

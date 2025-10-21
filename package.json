@@ -1,0 +1,39 @@
+{
+  "name": "workin-extension",
+  "version": "1.0.0",
+  "description": "WorkIn - Extensão de Automação de Candidaturas LinkedIn",
+  "main": "background/service-worker.js",
+  "scripts": {
+    "build": "npm run build:css && npm run build:js",
+    "build:css": "tailwindcss -i ./src/styles/input.css -o ./popup/styles.css",
+    "build:js": "echo 'JavaScript build completed'",
+    "dev": "npm run dev:css",
+    "dev:css": "tailwindcss -i ./src/styles/input.css -o ./popup/styles.css --watch",
+    "test": "jest",
+    "lint": "eslint . --ext .js",
+    "check": "npm run lint && npm run test"
+  },
+  "keywords": [
+    "linkedin",
+    "automation",
+    "job-application",
+    "chrome-extension",
+    "career"
+  ],
+  "author": "Equipe WorkIn",
+  "license": "MIT",
+  "devDependencies": {
+    "@babel/core": "^7.28.4",
+    "@babel/preset-env": "^7.28.3",
+    "@types/chrome": "^0.0.268",
+    "babel-jest": "^30.2.0",
+    "eslint": "^8.57.0",
+    "jest": "^29.7.0",
+    "jest-environment-jsdom": "^30.2.0",
+    "jsdom": "^27.0.1",
+    "tailwindcss": "^3.4.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
