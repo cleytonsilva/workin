@@ -421,87 +421,91 @@ class JobSearchEngine {
             }
           }
         }
+      }
       
-        /**
-         * Build search criteria from user data
-         */
-        buildSearchCriteria(profile, preferences) {
-          return {
-            keywords: [
-              ...(profile.skills || []),
-              ...(preferences.technologies || []),
-              profile.currentRole || 'desenvolvedor'
-            ].filter(Boolean),
-            location: preferences.location || profile.location || 'Brasil',
-            allowRemote: preferences.allowRemote || false,
-            experienceLevel: preferences.experienceLevel || 'mid',
-            preferredCompanies: preferences.companies || [],
-            minScore: preferences.minScore || 60
-          };
-        }
-      
-      // ... existing code ...
-      
-      // Get active LinkedIn tabs
-      const linkedinTabs = await this.getLinkedInTabs();
-      
-      if (linkedinTabs.length === 0) {
-        // Criar nova aba do LinkedIn se não houver nenhuma
-        const newTab = await chrome.tabs.create({
-          url: 'https://www.linkedin.com/jobs/',
-          active: false
-        });
-        
-        if (!newTab || !newTab.id) {
-          throw new Error('Não foi possível criar aba do LinkedIn');
-        }
-        
-        // Aguardar carregamento da nova aba
-        await this.waitForPageLoad(newTab.id);
-        linkedinTabs.push(newTab);
+      /**
+       * Build search criteria from user data
+       */
+      buildSearchCriteria(profile, preferences) {
+        return {
+          keywords: [
+            ...(profile.skills || []),
+            ...(preferences.technologies || []),
+            profile.currentRole || 'desenvolvedor'
+          ].filter(Boolean),
+          location: preferences.location || profile.location || 'Brasil',
+          allowRemote: preferences.allowRemote || false,
+          experienceLevel: preferences.experienceLevel || 'mid',
+          preferredCompanies: preferences.companies || [],
+          minScore: preferences.minScore || 60
+        };
       }
 
-      // Use the first LinkedIn tab for searching
-      const tabId = linkedinTabs[0].id;
-      
-      // Navigate to LinkedIn jobs search
-      const searchUrl = this.buildLinkedInSearchUrl(criteria);
-      console.log('Navegando para URL de busca:', searchUrl);
-      
-      await chrome.tabs.update(tabId, { url: searchUrl });
-      
-      // Wait for page to load
-      await this.waitForPageLoad(tabId);
-      
-      // Extract job listings
-      const jobs = await this.extractJobListings(tabId, criteria);
-      
-      if (!jobs || jobs.length === 0) {
-        console.warn('Nenhuma vaga encontrada na página');
+      /**
+       * Search jobs on LinkedIn
+       */
+      async searchJobs(criteria) {
+        try {
+          // Get active LinkedIn tabs
+          let linkedinTabs = await this.getLinkedInTabs();
+          
+          if (linkedinTabs.length === 0) {
+            // Criar nova aba do LinkedIn se não houver nenhuma
+            const newTab = await chrome.tabs.create({
+              url: 'https://www.linkedin.com/jobs/',
+              active: false
+            });
+            
+            if (!newTab || !newTab.id) {
+              throw new Error('Não foi possível criar aba do LinkedIn');
+            }
+            
+            // Aguardar carregamento da nova aba
+            await this.waitForPageLoad(newTab.id);
+            linkedinTabs = [newTab];
+          }
+
+          // Use the first LinkedIn tab for searching
+          const tabId = linkedinTabs[0].id;
+          
+          // Navigate to LinkedIn jobs search
+          const searchUrl = this.buildLinkedInSearchUrl(criteria);
+          console.log('Navegando para URL de busca:', searchUrl);
+          
+          await chrome.tabs.update(tabId, { url: searchUrl });
+          
+          // Wait for page to load
+          await this.waitForPageLoad(tabId);
+          
+          // Extract job listings
+          const jobs = await this.extractJobListings(tabId, criteria);
+          
+          if (!jobs || jobs.length === 0) {
+            console.warn('Nenhuma vaga encontrada na página');
+          }
+          
+          // Calculate compatibility scores
+          const scoredJobs = await this.scoreJobs(jobs, criteria);
+          
+          // Filter by minimum score
+          const filteredJobs = scoredJobs.filter(job => job.score >= (criteria.minScore || 60));
+          
+          this.lastSearchTime = new Date().toISOString();
+          
+          return {
+            total: filteredJobs.length,
+            jobs: filteredJobs.slice(0, criteria.maxResults || 50),
+            criteria,
+            searchTime: this.lastSearchTime
+          };
+          
+        } catch (error) {
+          console.error('Job search error:', error);
+          throw error;
+        } finally {
+          this.isSearching = false;
+        }
       }
-      
-      // Calculate compatibility scores
-      const scoredJobs = await this.scoreJobs(jobs, criteria);
-      
-      // Filter by minimum score
-      const filteredJobs = scoredJobs.filter(job => job.score >= (criteria.minScore || 60));
-      
-      this.lastSearchTime = new Date().toISOString();
-      
-      return {
-        total: filteredJobs.length,
-        jobs: filteredJobs.slice(0, criteria.maxResults || 50),
-        criteria,
-        searchTime: this.lastSearchTime
-      };
-      
-    } catch (error) {
-      console.error('Job search error:', error);
-      throw error;
-    } finally {
-      this.isSearching = false;
-    }
-  }
 
   /**
    * Get active LinkedIn tabs

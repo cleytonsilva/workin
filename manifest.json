@@ -31,7 +31,8 @@
         "shared/utils.js",
         "utils/safety-manager.js",
         "content/linkedin-job-scraper.js",
-        "content/linkedin-detector.js"
+        "content/linkedin-detector.js",
+        "content/main-content-script.js"
       ],
       "css": ["content/workin-overlay.css"],
       "run_at": "document_idle"
@@ -66,6 +67,9 @@
     {
       "resources": [
         "src/icons/*",
+        "src/styles/design-tokens.css",
+        "popup/styles/redesign.css",
+        "popup/components/ui/*",
         "content/workin-overlay.css",
         "onboarding/*",
         "content/linkedin-profile-parser.js",

@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WorkIn - Assistente de Candidaturas</title>
+  <style>
+    body {
+      width: 380px;
+      min-height: 480px;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+      margin: 0;
+      padding: 0;
+      background: #F8FAFC;
+      color: #1E293B;
+    }
+    
+    .header {
+      background: linear-gradient(90deg, #0A66C2 0%, #7C3AED 100%);
+      color: white;
+      padding: 16px;
+      text-align: center;
+    }
+    
+    .header h1 {
+      margin: 0;
+      font-size: 20px;
+      font-weight: bold;
+    }
+    
+    .content {
+      padding: 16px;
+    }
+    
+    .button {
+      width: 100%;
+      padding: 12px;
+      margin: 8px 0;
+      border: none;
+      border-radius: 8px;
+      background: #0A66C2;
+      color: white;
+      font-size: 14px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    
+    .button:hover {
+      background: #084D93;
+    }
+    
+    .button:disabled {
+      background: #E2E8F0;
+      color: #64748B;
+      cursor: not-allowed;
+    }
+    
+    .status {
+      padding: 12px;
+      margin: 8px 0;
+      border-radius: 8px;
+      background: white;
+      border: 1px solid #E2E8F0;
+    }
+    
+    .error {
+      background: #FEF2F2;
+      border-color: #FECACA;
+      color: #DC2626;
+    }
+    
+    .success {
+      background: #F0FDF4;
+      border-color: #BBF7D0;
+      color: #057642;
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>WorkIn</h1>
+    <p>Automação de Candidaturas LinkedIn</p>
+  </div>
+  
+  <div class="content">
+    <div id="status" class="status">
+      <strong>Status:</strong> <span id="statusText">Carregando...</span>
+    </div>
+    
+    <button id="scanBtn" class="button">Escanear Página</button>
+    <button id="collectBtn" class="button">Coletar Vagas</button>
+    <button id="autoApplyBtn" class="button" disabled>Candidatura Automática</button>
+    
+    <div id="results" class="status" style="display: none;">
+      <strong>Resultados:</strong>
+      <div id="resultsContent"></div>
+    </div>
+  </div>
+
+  <script src="../shared/types.js"></script>
+  <script src="../shared/utils.js"></script>
+  <script src="popup-simple.js"></script>
+</body>
+</html>
